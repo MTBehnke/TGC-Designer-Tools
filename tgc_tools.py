@@ -169,6 +169,17 @@ def get_spline_configuration_json(course_directory):
     except:
         return None
 
+def get_tree_configuration_json(course_directory):
+    try:
+        course_dir = Path(course_directory)
+        trees_json = None
+        with (course_dir / 'trees.json').open('r') as f:
+            trees_json = json.loads(f.read())
+
+        return trees_json
+    except:
+        return None
+
 def write_course_json(course_directory, course_json):
     course_dir = Path(course_directory)
     with (course_dir / 'unpacked/course_description/course_description.json').open('w') as f:

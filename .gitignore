@@ -109,7 +109,11 @@ venv.bak/
 *.laz
 *.npy
 *.png
-*.json
+#*.json
 *.jpg
 MAPQUEST_API_KEY.txt
 src/laspy/
+.idea
+*.iws
+*.iml
+*.ipr
