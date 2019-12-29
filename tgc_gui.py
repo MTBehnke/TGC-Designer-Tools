@@ -5,11 +5,14 @@ import tkinter.ttk as ttk
 from tkinter.scrolledtext import ScrolledText
 
 import copy
+from typing import List
+
 import cv2
 from functools import partial
 import math
 import numpy as np
 import numpy
+import self as self
 from PIL import Image, ImageTk
 import string
 
@@ -36,6 +39,9 @@ course_json = None
 
 scorecard = None
 inner_frame = None # Scorecard inner frame
+
+tree_settings = None # Tree Settings inner frame
+
 
 def drawPlaceholder():
     global root
@@ -285,6 +291,7 @@ def importCourseAction():
         name_entry.configure(state='normal')
         course_name_var.set(course_json["name"])
         drawCourse(course_json)
+        add_treetype_settings(course_json["theme"])
 
 def exportCourseAction():
     global root
@@ -528,7 +535,7 @@ def runLidar(scale_entry, epsg_entry, unit_entry, printf):
     if lidar_dir_path:
         lidar_map_api.generate_lidar_previews(lidar_dir_path, sample_scale, root.filename, force_epsg=force_epsg, force_unit=force_unit, printf=printf)
 
-def generateCourseFromLidar(options_entries_dict, printf):
+def generateCourseFromLidar(options_entries_dict, tree_settings_dict, tree_category, printf):
     global root
     global course_json
 
@@ -552,7 +559,7 @@ def generateCourseFromLidar(options_entries_dict, printf):
     heightmap_dir_path = tk.filedialog.askdirectory(initialdir=root.filename, title="Select heightmap and mask files directory")
     if heightmap_dir_path:
         drawPlaceholder()
-        course_json = tgc_image_terrain.generate_course(course_json, heightmap_dir_path, options_dict=options_dict, printf=printf)
+        course_json = tgc_image_terrain.generate_course(course_json, heightmap_dir_path, options_dict=options_dict, tree_settings_dict=tree_settings_dict, tree_category=tree_category , printf=printf)
         drawCourse(course_json)
         printf("Done Rendering Course Preview")
 
@@ -560,7 +567,7 @@ osm_types = [
     ('Open Street Map Exports', '*.osm'), 
     ('All files', '*'), 
 ]
-def importOSMFile(options_entries_dict, printf):
+def importOSMFile(options_entries_dict, tree_settings_dict, tree_category, printf):
     global root
     global course_json
 
@@ -587,9 +594,62 @@ def importOSMFile(options_entries_dict, printf):
             xml_data = f.read()
             printf("Loading OpenStreetMap Data from " + str(osm_file))
             drawPlaceholder()
-            course_json = tgc_image_terrain.generate_flat_course(course_json, xml_data, options_dict=options_dict, printf=printf)
+            course_json = tgc_image_terrain.generate_flat_course(course_json, xml_data, options_dict=options_dict, tree_category=tree_category, printf=printf)
             drawCourse(course_json)
             printf("Done Rendering Course Preview")
+
+def add_treetype_settings(theme_id):
+    global tree_settings
+    global tree_category
+
+    tree_settings_dict["theme_name"].set(value="Theme:  " + tgc_definitions.themes.get(theme_id).capitalize())
+
+    # Tree Type Options
+    tree_names = tgc_definitions.tree_names.get(theme_id)
+    default_normal = tgc_definitions.normal_trees.get(theme_id)
+    default_skinny = tgc_definitions.skinny_trees.get(theme_id)
+    self.category_value = []
+    tree_scale = []
+
+    Label(treeControlFrame, text="Tree Type", fg=check_fg, bg=bg_color).grid(row=0, column=0, sticky=SW)
+    Label(treeControlFrame, text="Normal", fg=check_fg, bg=bg_color).grid(row=0, column=1, sticky=S, padx=5)
+    Label(treeControlFrame, text="Skinny", fg=check_fg, bg=bg_color).grid(row=0, column=2, sticky=S, padx=6)
+    Label(treeControlFrame, text="None", fg=check_fg, bg=bg_color).grid(row=0, column=3, sticky=S, padx=10)
+    Label(treeControlFrame, text="Size Multiplier", fg=check_fg, bg=bg_color).grid(row=0, column=4, sticky=S, padx=10)
+
+    row = 0
+    for tree_name in tree_names:
+        if tree_name is not "":
+            if row in default_normal:
+                tree_button_value = 1
+            elif row in default_skinny:
+                tree_button_value = 2
+            else:
+                tree_button_value = 3
+            self.category_value.append(tk.IntVar(value=tree_button_value))
+            tree_scale.append(DoubleVar(value=1.0))
+            Label(treeControlFrame, text=tree_name, fg=check_fg, bg=bg_color).grid(row=row + 1, column=0, sticky=SW)
+            category_rb = Radiobutton(treeControlFrame, value=1, variable=self.category_value[row], bg=bg_color).grid(row=row + 1, column=1, sticky=S)
+            tree_category.append(category_rb)
+            category_rb = Radiobutton(treeControlFrame, value=2, variable=self.category_value[row], bg=bg_color).grid(row=row + 1, column=2, sticky=S)
+            tree_category.append(category_rb)
+            category_rb = Radiobutton(treeControlFrame, value=3, variable=self.category_value[row], bg=bg_color).grid(row=row + 1, column=3, sticky=S)
+            tree_category.append(category_rb)
+            Scale(treeControlFrame, variable=tree_scale[row], from_=0.5, to_=1.5, resolution=0.1, orient=HORIZONTAL, bg=bg_color, bd=0, showvalue=0).grid(row=row + 1, column=4)
+            Label(treeControlFrame, textvariable=tree_scale[row], fg=check_fg, bg=bg_color).grid(row=row + 1, column=5, sticky=SW, padx=2, pady=0)
+            #tree_category.append(tk.IntVar(value=tree_button_value))
+            #tree_scale.append(DoubleVar(value=1.0))
+        else:
+            self.category_value.append(tk.IntVar(value=0))
+            tree_scale.append(DoubleVar(value=0.0))
+        row = row + 1
+    tree_category.append(self.category_value)
+    tree_category.append(tree_scale)
+    # Pack the Tree Settings Frames
+    topFrame.pack(side=TOP, padx=5, ipady=5, fill=tk.X, expand=False)
+    bottomFrame.pack(side=TOP, padx=5, pady=8, fill=tk.BOTH, expand=True)
+    treeControlFrame2.pack(side=LEFT, padx=5, pady=5, fill=tk.BOTH, expand=True)
+    treeControlFrame.pack(side=RIGHT, padx=15, pady=5, fill=tk.BOTH, expand=True)
 
 root = tk.Tk()
 root.geometry("800x600")
@@ -619,11 +679,13 @@ tools = ttk.Frame(nb, style='new.TFrame')
 lidar = ttk.Frame(nb, style='new.TFrame')
 course = ttk.Frame(nb, style='new.TFrame')
 scorecard = ttk.Frame(nb, style='new.TFrame')
+tree_settings = ttk.Frame(nb, style='new.TFrame')
 nb.pack(fill=BOTH, expand=1)
 nb.add(tools, text='Course Tools')
 nb.add(lidar, text='Process Lidar')
 nb.add(course, text='Import Terrain and Features')
 nb.add(scorecard, text="Scorecard")
+nb.add(tree_settings, text="Tree Settings")
 
 ## Tools Tab
 image_frame = Frame(tools, width=image_width, height=image_height)
@@ -755,6 +817,8 @@ coursePrintf = partial(tkinterPrintFunction, course, courseConsoleOutput)
 courseControlFrame = Frame(course, bg=bg_color)
 
 options_entries_dict = {} # Store the many entries into one dictionary
+tree_settings_dict = {}  # Store the entries into one dictionary
+tree_category = []  # Store tree category and size multiplier entries in list
 
 # OpenStreetMap Options
 check_fg = "black" # Check fg can't be light or near white or it is invisible in the checkbox
@@ -814,7 +878,7 @@ buildingCheck.select()
 options_entries_dict["tree"] = tk.BooleanVar()
 treeCheck = Checkbutton(osmSubFrame, text="Import Mapped Woods/Trees", variable=options_entries_dict["tree"], fg=check_fg, bg=check_bg)
 treeCheck.deselect()
-osmbutton = Button(osmSubFrame, text="Make Flat Course From OSM File", command=partial(importOSMFile, options_entries_dict, coursePrintf))
+osmbutton = Button(osmSubFrame, text="Make Flat Course From OSM File", command=partial(importOSMFile, options_entries_dict, tree_settings_dict, tree_category, coursePrintf))
 
 osmew.grid(row=0, column=1, padx=5)
 osmns.grid(row=1, column=1, padx=5)
@@ -837,7 +901,7 @@ osmbutton.grid(row=15, columnspan=2)
 useOSMCheck.pack(padx=10, pady=10)
 osmSubFrame.pack(padx=5, pady=5)
 
-coursebutton = Button(courseControlFrame, text="Select and Import Heightmap and OSM into Course", command=partial(generateCourseFromLidar, options_entries_dict, coursePrintf))
+coursebutton = Button(courseControlFrame, text="Select and Import Heightmap and OSM into Course", command=partial(generateCourseFromLidar, options_entries_dict, tree_settings_dict, tree_category, coursePrintf))
 
 # Pack the controls frames, button at the top followed by the options
 coursebutton.pack(padx=10, pady=10)
@@ -893,5 +957,58 @@ courseOptionsFrame.pack(side=LEFT, anchor=N, padx=5, fill=X, expand=True)
 # Pack the big frames side by side
 courseControlFrame.pack(side=LEFT, padx=5, pady=5, fill=tk.BOTH, expand=True)
 courseConsoleOutput.pack(side=LEFT, padx=5, pady=5, fill=tk.BOTH, expand=True)
+
+
+# Tree Settings Tab
+treeControlFrame = Frame(tree_settings, bg=bg_color, relief=GROOVE)
+treeControlFrame2 = Frame(tree_settings, bg=bg_color, relief=GROOVE)
+
+# Tree Settings Options
+tree_settings_dict["theme_name"] = tk.StringVar(value="pending")
+tree_settings_dict["default_trees"] = tk.BooleanVar(value=ON)
+tree_settings_dict["tree_min_height"] = tk.DoubleVar(value=0.5)
+tree_settings_dict["tree_max_height"] = tk.DoubleVar(value=1.5)
+tree_settings_dict["tree_min_radius"] = tk.DoubleVar(value=0.5)
+tree_settings_dict["tree_max_radius"] = tk.DoubleVar(value=1.5)
+tree_settings_dict["skinny_ratio"] = tk.DoubleVar(value=2.5)
+tree_settings_dict["normalize_trees"] = tk.BooleanVar(value=OFF)
+
+topFrame = Frame(treeControlFrame2, bg=tool_bg)
+theme_label = Label(topFrame, textvariable = tree_settings_dict["theme_name"], fg=text_fg, bg=tool_bg, pady=5).pack()
+default_setting = Checkbutton(topFrame, text="Use Default Settings", variable=tree_settings_dict["default_trees"], fg=check_fg, bg=check_bg)
+default_setting.pack()
+default_setting.focus()
+
+bottomFrame = Frame(treeControlFrame2, bg=bg_color)
+Label(bottomFrame, text="Tree Height Range", fg=check_fg, bg=bg_color).grid(row=3, column=1, sticky=SW, padx=2, pady=0)
+Label(bottomFrame, text="Minimum Height", fg=check_fg, bg=bg_color).grid(row=4, column=0, sticky=SW, padx=2, pady=0)
+Scale(bottomFrame, variable=tree_settings_dict["tree_min_height"], from_=0.1, to_=0.9, resolution=0.1, orient=HORIZONTAL, bg=bg_color, bd=0, showvalue=0).grid(row=4, column=1)
+Label(bottomFrame, textvariable=tree_settings_dict["tree_min_height"], fg=check_fg, bg=bg_color).grid(row=4, column=2, sticky=SW, padx=2, pady=0)
+Label(bottomFrame, text="Maximum Height", fg=check_fg, bg=bg_color).grid(row=5, column=0, sticky=SW, padx=2, pady=0)
+Scale(bottomFrame, variable=tree_settings_dict["tree_max_height"], from_=1.0, to_=2.0, resolution=0.1, orient=HORIZONTAL, bg=bg_color, bd=0, showvalue=0).grid(row=5, column=1)
+Label(bottomFrame, textvariable=tree_settings_dict["tree_max_height"], fg=check_fg, bg=bg_color).grid(row=5, column=2, sticky=SW, padx=2, pady=0)
+
+Label(bottomFrame, text="", fg=check_fg, bg=bg_color).grid(row=6, column=0, sticky=SW, padx=2, pady=0)
+
+Label(bottomFrame, text="Tree Width Range", fg=check_fg, bg=bg_color).grid(row=7, column=1, sticky=SW, padx=2, pady=0)
+Label(bottomFrame, text="Minimum Width", fg=check_fg, bg=bg_color).grid(row=8, column=0, sticky=SW, padx=2, pady=0)
+Scale(bottomFrame, variable=tree_settings_dict["tree_min_radius"], from_=0.1, to_=0.9, resolution=0.1, orient=HORIZONTAL, bg=bg_color, bd=0, showvalue=0).grid(row=8, column=1)
+Label(bottomFrame, textvariable=tree_settings_dict["tree_min_radius"], fg=check_fg, bg=bg_color).grid(row=8, column=2, sticky=SW, padx=2, pady=0)
+Label(bottomFrame, text="Maximum Width", fg=check_fg, bg=bg_color).grid(row=9, column=0, sticky=SW, padx=2, pady=0)
+Scale(bottomFrame, variable=tree_settings_dict["tree_max_radius"], from_=1.0, to_=2.0, resolution=0.1, orient=HORIZONTAL, bg=bg_color, bd=0, showvalue=0).grid(row=9, column=1)
+Label(bottomFrame, textvariable=tree_settings_dict["tree_max_radius"], fg=check_fg, bg=bg_color).grid(row=9, column=2, sticky=SW, padx=2, pady=0)
+
+Label(bottomFrame, text="", fg=check_fg, bg=bg_color).grid(row=10, column=0, sticky=SW, padx=2, pady=0)
+
+Label(bottomFrame, text="Height : Width Ratio", fg=check_fg, bg=bg_color).grid(row=11, column=1, sticky=SW, padx=2, pady=0)
+Label(bottomFrame, text="\u2190 +Skinny : +Normal \u2192", fg=check_fg, bg=bg_color).grid(row=12, column=0, sticky=SW, padx=2, pady=0)
+Scale(bottomFrame, variable=tree_settings_dict["skinny_ratio"], from_=1.0, to_=4.0, resolution=0.1, orient=HORIZONTAL, bg=bg_color, bd=0, showvalue=0).grid(row=12, column=1)
+Label(bottomFrame, textvariable=tree_settings_dict["skinny_ratio"], fg=check_fg, bg=bg_color).grid(row=12, column=2, sticky=SW, padx=2, pady=0)
+
+Label(bottomFrame, text="", fg=check_fg, bg=bg_color).grid(row=13, column=0, sticky=SW, padx=2, pady=0)
+
+Checkbutton(bottomFrame, text=" Normalize Tree Sizes", variable=tree_settings_dict["normalize_trees"], fg=check_fg, bg=bg_color).grid(row=14, column=0, sticky=SW, pady=8)
+
+#add_treetype_settings()
 
 root.mainloop()
