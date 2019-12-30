@@ -41,17 +41,19 @@ def get_placed_object():
 def get_trees(theme, tree_variety, trees, tree_settings_dict, tree_category):
     # Get possible trees for this theme.  User can't easily change theme after this
     # But it's easy to rerun the import tool
+    default_trees = tree_settings_dict.get('default_trees').get()
 
-    if tree_settings_dict.get('default_trees') is True:
+    if default_trees is True:
         normal_tree_ids = tgc_definitions.normal_trees.get(theme, [0])
         skinny_tree_ids = tgc_definitions.skinny_trees.get(theme, normal_tree_ids)
     else:
         normal_tree_ids = []
         skinny_tree_ids = []
         for i, x in enumerate(tree_category[0]):
-            if x==1:
+            x_value = x.get()
+            if x_value==1:
                 normal_tree_ids.append(i)
-            elif x==2:
+            elif x_value==2:
                 skinny_tree_ids.append(i)
     # Default to the default tree 0 if empty or not found
     if (not tree_variety) or len(normal_tree_ids) == 0:
@@ -75,16 +77,16 @@ def get_trees(theme, tree_variety, trees, tree_settings_dict, tree_category):
         skinny_trees.append(p)
 
     # Scale trees based on relative sizes
-    if tree_settings_dict.get('default_trees') is True:
+    if default_trees is True:
         min_radius_scale = 0.2
         max_radius_scale = 1.5
         min_height_scale = 0.5
         max_height_scale = 1.2
     else:
-        min_radius_scale = tree_settings_dict.get('tree_min_radius')
-        max_radius_scale = tree_settings_dict.get('tree_max_radius')
-        min_height_scale = tree_settings_dict.get('tree_min_height')
-        max_height_scale = tree_settings_dict.get('tree_max_height')
+        min_radius_scale = tree_settings_dict.get('tree_min_radius').get()
+        max_radius_scale = tree_settings_dict.get('tree_max_radius').get()
+        min_height_scale = tree_settings_dict.get('tree_min_height').get()
+        max_height_scale = tree_settings_dict.get('tree_max_height').get()
 
     radius_scale_range = max_radius_scale - min_radius_scale
     height_scale_range = max_height_scale - min_height_scale
@@ -108,22 +110,17 @@ def get_trees(theme, tree_variety, trees, tree_settings_dict, tree_category):
         min_height_scale = 1.0
         height_multiplier = 0.0
 
-
-    # Multiply by this to make trees with same height scale to appear as the same height in TGC
-    tree_normalize = [ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 ]
-    # Allow custom scaling by type
-    size_multiplier = [ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 ]
-
-
-
-    if tree_settings_dict.get('default_trees') is True:
+    if default_trees is True:
         skinny_h_r_ratio = 2.5  # Height to Radius Ratio to determine whether tree is a normal or skinny tree
         size_multiplier = [1.0] * len(tree_category[0])
         tree_normalize = [1.0] * len(tree_category[0])
     else:
-        size_multiplier = tree_category[1]
-        skinny_h_r_ratio = tree_settings_dict.get('skinny_h_r_ratio')
-        if tree_settings_dict.get('normalize_trees') is False:
+        #size_multiplier = tree_category[1]
+        size_multiplier = []
+        for i, x in enumerate(tree_category[1]):
+            size_multiplier.append(x.get())
+        skinny_h_r_ratio = tree_settings_dict.get('skinny_ratio').get()
+        if tree_settings_dict.get('normalize_trees').get() is False:
             tree_normalize = [1.0] * len(tree_category[0])
         else:
             tree_normalize = tgc_definitions.tree_normalize.get(theme, [0])

@@ -629,12 +629,9 @@ def add_treetype_settings(theme_id):
             self.category_value.append(tk.IntVar(value=tree_button_value))
             tree_scale.append(DoubleVar(value=1.0))
             Label(treeControlFrame, text=tree_name, fg=check_fg, bg=bg_color).grid(row=row + 1, column=0, sticky=SW)
-            category_rb = Radiobutton(treeControlFrame, value=1, variable=self.category_value[row], bg=bg_color).grid(row=row + 1, column=1, sticky=S)
-            tree_category.append(category_rb)
-            category_rb = Radiobutton(treeControlFrame, value=2, variable=self.category_value[row], bg=bg_color).grid(row=row + 1, column=2, sticky=S)
-            tree_category.append(category_rb)
-            category_rb = Radiobutton(treeControlFrame, value=3, variable=self.category_value[row], bg=bg_color).grid(row=row + 1, column=3, sticky=S)
-            tree_category.append(category_rb)
+            Radiobutton(treeControlFrame, value=1, variable=self.category_value[row], bg=bg_color).grid(row=row + 1, column=1, sticky=S)
+            Radiobutton(treeControlFrame, value=2, variable=self.category_value[row], bg=bg_color).grid(row=row + 1, column=2, sticky=S)
+            Radiobutton(treeControlFrame, value=3, variable=self.category_value[row], bg=bg_color).grid(row=row + 1, column=3, sticky=S)
             Scale(treeControlFrame, variable=tree_scale[row], from_=0.5, to_=1.5, resolution=0.1, orient=HORIZONTAL, bg=bg_color, bd=0, showvalue=0).grid(row=row + 1, column=4)
             Label(treeControlFrame, textvariable=tree_scale[row], fg=check_fg, bg=bg_color).grid(row=row + 1, column=5, sticky=SW, padx=2, pady=0)
             #tree_category.append(tk.IntVar(value=tree_button_value))
@@ -645,6 +642,7 @@ def add_treetype_settings(theme_id):
         row = row + 1
     tree_category.append(self.category_value)
     tree_category.append(tree_scale)
+
     # Pack the Tree Settings Frames
     topFrame.pack(side=TOP, padx=5, ipady=5, fill=tk.X, expand=False)
     bottomFrame.pack(side=TOP, padx=5, pady=8, fill=tk.BOTH, expand=True)
