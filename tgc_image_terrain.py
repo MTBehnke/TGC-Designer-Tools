@@ -39,11 +39,21 @@ def get_placed_object():
     return output
 
 def get_trees(theme, tree_variety, trees, tree_settings_dict, tree_category):
-    # Tree Settings Approach:
-    # Default-Lidar:  Use lidar heights within default height range, radius - scale across default range, no multipliers
-    # Default-OSM:  Use random height within default height range, radius = height scale, no multipliers
-    # Custom-Lidar:  Use lidar heights within settings height range, lidar radius within settings radius range, use multipliers
-    # Custom-OSM:  Use random heights within settings height range, radius = height scale, use multipliers
+    # Default-Lidar:
+	#   Height: Use lidar heights within default height range
+	#   Radius: lidar radius within default radius range, no multipliers
+
+    # Default-OSM:
+	#   Height: Use random height within default height range
+	#   Radius: Equal to height scale, no multipliers
+
+    # Custom-Lidar:
+	#   Height: Use lidar heights within settings height range
+	#   Radius: lidar radius within settings radius range, use multipliers
+
+    # Custom-OSM:
+	#   Height: Use random heights within settings height range
+	#   Radius: Equal to height scale, including multipliers
 
     default_trees = tree_settings_dict.get('default_trees').get()
 
@@ -87,7 +97,7 @@ def get_trees(theme, tree_variety, trees, tree_settings_dict, tree_category):
     max_tree_radius = max(trees, key=lambda x: x[2])[2]
     tree_height_range = max_tree_height - min_tree_height
     tree_radius_range = max_tree_radius - min_tree_radius
-    real_height_factor = tgc_definitions.tree_meters_to_tgc.get(theme, [0])
+    real_height_factor = tgc_definitions.tree_meters_to_tgc.get(theme, [0])   # converts height in meters to TGC scale
 
     # Add lidar tree height info to settings page
     tree_settings_dict.get('tallest_tree').set(value="Tallest Tree Height:  " + '{:.1f}'.format(max_tree_height) + " m / " + '{:.1f}'.format(max_tree_height*3.28) + " ft")
@@ -95,17 +105,19 @@ def get_trees(theme, tree_variety, trees, tree_settings_dict, tree_category):
 
     # Scale trees based on relative sizes, settings
     if default_trees is True:
-        min_height = 10 / 3.28  # min default height in meters
-        max_height = 70 / 3.28  # max default height in meters
-        min_radius_scale = 50   # min radius scale as a percent of tree specific height scale
-        max_radius_scale = 150  # max radius scale as a percent of height specific scale
+        min_height = 10 / 3.28  # min default height in meters (first number is feet)
+        max_height = 70 / 3.28  # max default height in meters (first number is feet)
+        min_radius_scale = 50 / 100 # min radius scale as a percent of tree specific height scale
+        max_radius_scale = 150 / 100 # max radius scale as a percent of tree specific height scale
+        radius_scale_range = max_radius_scale - min_radius_scale
         skinny_h_r_ratio = 2.5  # Height to Radius Ratio to determine whether tree is a normal or skinny tree
-        size_multiplier = [1.0] * len(tree_category[1])
+        size_multiplier = [1.0] * (len(tgc_definitions.tree_names.get(theme)) + 1)
     else:
         min_height = tree_settings_dict.get('tree_min_height').get() / 3.28
         max_height = tree_settings_dict.get('tree_max_height').get() / 3.28
-        min_radius_scale = tree_settings_dict.get('tree_min_radius').get()
-        max_radius_scale = tree_settings_dict.get('tree_max_radius').get()
+        min_radius_scale = tree_settings_dict.get('tree_min_radius').get() / 100
+        max_radius_scale = tree_settings_dict.get('tree_max_radius').get() / 100
+        radius_scale_range = max_radius_scale - min_radius_scale
         skinny_h_r_ratio = tree_settings_dict.get('skinny_ratio').get()
         size_multiplier = []
         for i, x in enumerate(tree_category[1]):
@@ -121,10 +133,10 @@ def get_trees(theme, tree_variety, trees, tree_settings_dict, tree_category):
             group = random.choice(skinny_trees)
         tree_type = group['Key']['type']
 
-        # Tree Height Scale (default/custom addressed in settings above)
-        if tree_height_range < 0.1:     # OSM trees
+        # Tree Height Scale
+        if tree_height_range < 0.1:     # OSM tree
             h = random.randrange(min_height, max_height)
-        else:                           # Lidar trees
+        else:                           # Lidar tree
             h = h * size_multiplier[tree_type]
             if h < min_height: h = min_height
             elif h > max_height: h = max_height
@@ -132,10 +144,10 @@ def get_trees(theme, tree_variety, trees, tree_settings_dict, tree_category):
         t['scale']['y'] = h_scale
 
         # Tree Radius Scale
-        if default_trees is True:   # multipliers already included in heights
+        if tree_height_range < 0.1:     # OSM tree
             r_scale = h_scale
-        else:
-            r_scale = h_scale * random.randrange(min_radius_scale, max_radius_scale) / 100
+        else:                           # Lidar tree
+            r_scale = h_scale * (min_radius_scale + radius_scale_range * (r - min_tree_radius) / tree_radius_range)
         t['scale']['x'] = r_scale
         t['scale']['z'] = r_scale
         group['Value']['items'].append(t)
