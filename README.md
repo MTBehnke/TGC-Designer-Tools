@@ -38,3 +38,5 @@ python -m pip install -r requirements.txt
 
 pyinstaller -F --add-binary="./laszip/laszip-cli.exe;laszip" --additional-hooks-dir="./PyInstaller/hooks/" tgc_gui.py
 
+In some cases you may need to include paths to certain directories (e.g. using venv for IDE, but not for pyinstaller):
+pyinstaller -F --clean --add-binary="./laszip/laszip-cli.exe;laszip" --additional-hooks-dir="./PyInstaller/hooks/" --paths="./venv/Lib/site-packages/" --paths="./venv/src/" --paths="./venv/src/laspy/" tgc_gui.py
