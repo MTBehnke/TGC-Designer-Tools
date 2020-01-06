@@ -56,6 +56,7 @@ def get_trees(theme, tree_variety, trees, tree_settings_dict, tree_category):
 	#   Radius: Equal to height scale, including multipliers
 
     default_trees = tree_settings_dict.get('default_trees').get()
+    enforce_tgc_size = tree_settings_dict.get('enforce_tgc_limit').get()
 
     # Get possible trees for this theme. User can't easily change theme after this, but it's easy to rerun the import tool
     if default_trees is True:
@@ -141,6 +142,7 @@ def get_trees(theme, tree_variety, trees, tree_settings_dict, tree_category):
             if h < min_height: h = min_height
             elif h > max_height: h = max_height
         h_scale = h * real_height_factor[tree_type]
+        if (enforce_tgc_size is True) or (default_trees is True): h_scale = max(h_scale, 0.5)
         t['scale']['y'] = h_scale
 
         # Tree Radius Scale
@@ -148,6 +150,7 @@ def get_trees(theme, tree_variety, trees, tree_settings_dict, tree_category):
             r_scale = h_scale
         else:                           # Lidar tree
             r_scale = h_scale * (min_radius_scale + radius_scale_range * (r - min_tree_radius) / tree_radius_range)
+        if (enforce_tgc_size is True) or (default_trees is True): r_scale = max(r_scale, 0.5)
         t['scale']['x'] = r_scale
         t['scale']['z'] = r_scale
         group['Value']['items'].append(t)

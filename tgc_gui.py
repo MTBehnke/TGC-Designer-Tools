@@ -23,7 +23,7 @@ import tgc_image_terrain
 from tgc_visualizer import drawCourseAsImage
 import OSMTGC
 
-TGC_GUI_VERSION = "0.3.1 Beta"
+TGC_GUI_VERSION = "0.3.2 Beta"
 
 image_width = 500
 image_height = 500
@@ -993,6 +993,7 @@ tree_settings_dict["num_trees"]=tk.StringVar(value="Lidar Tree Count:")
 tree_settings_dict["tallest_tree"]=tk.StringVar(value="Tallest Tree Height:")
 tree_settings_dict["shortest_tree"]=tk.StringVar(value="Shortest Tree Height:")
 tree_settings_dict["default_trees"] = tk.BooleanVar(value=True)
+tree_settings_dict["enforce_tgc_limit"] = tk.BooleanVar(value=True)
 tree_settings_dict["tree_min_height"] = tk.DoubleVar(value=10)
 tree_settings_dict["tree_max_height"] = tk.DoubleVar(value=70)
 tree_settings_dict["tree_min_radius"] = tk.DoubleVar(value=50)
@@ -1008,6 +1009,10 @@ default_setting = Checkbutton(topFrame, text="Use Default Settings", variable=tr
 default_setting['command'] = partial(enableAllChildren, tree_settings_dict["default_trees"], bottomFrame, treeControlFrame)
 default_setting.pack()
 default_setting.focus()
+
+Checkbutton(bottomFrame, text="Enforce TGC Minimum Tree Size", variable=tree_settings_dict["enforce_tgc_limit"], fg=check_fg, bg=bg_color, state=DISABLED).grid(row=1, column=0, sticky=SW, padx=2, pady=0)
+
+Label(bottomFrame, text="", fg=check_fg, bg=bg_color, state=DISABLED).grid(row=2, column=0, sticky=SW, padx=2, pady=0)
 
 Label(bottomFrame, text="Tree Height Limits:", fg=check_fg, bg=bg_color, state=DISABLED).grid(row=3, column=0, sticky=SW, padx=2, pady=0)
 Label(bottomFrame, text="Minimum Height (feet)", fg=check_fg, bg=bg_color, state=DISABLED).grid(row=4, column=0, sticky=SW, padx=2, pady=0)
