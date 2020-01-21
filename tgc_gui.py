@@ -23,7 +23,7 @@ import tgc_image_terrain
 from tgc_visualizer import drawCourseAsImage
 import OSMTGC
 
-TGC_GUI_VERSION = "0.3.2 Beta"
+TGC_GUI_VERSION = "0.3.4 Beta"
 
 image_width = 500
 image_height = 500
@@ -994,6 +994,7 @@ tree_settings_dict["tallest_tree"]=tk.StringVar(value="Tallest Tree Height:")
 tree_settings_dict["shortest_tree"]=tk.StringVar(value="Shortest Tree Height:")
 tree_settings_dict["default_trees"] = tk.BooleanVar(value=True)
 tree_settings_dict["enforce_tgc_limit"] = tk.BooleanVar(value=True)
+tree_settings_dict["size_multiplier_all"] = tk.DoubleVar(value=1.0)
 tree_settings_dict["tree_min_height"] = tk.DoubleVar(value=10)
 tree_settings_dict["tree_max_height"] = tk.DoubleVar(value=70)
 tree_settings_dict["tree_min_radius"] = tk.DoubleVar(value=50)
@@ -1014,34 +1015,36 @@ Checkbutton(bottomFrame, text="Enforce TGC Minimum Tree Size", variable=tree_set
 
 Label(bottomFrame, text="", fg=check_fg, bg=bg_color, state=DISABLED).grid(row=2, column=0, sticky=SW, padx=2, pady=0)
 
-Label(bottomFrame, text="Tree Height Limits:", fg=check_fg, bg=bg_color, state=DISABLED).grid(row=3, column=0, sticky=SW, padx=2, pady=0)
-Label(bottomFrame, text="Minimum Height (feet)", fg=check_fg, bg=bg_color, state=DISABLED).grid(row=4, column=0, sticky=SW, padx=2, pady=0)
-Scale(bottomFrame, variable=tree_settings_dict["tree_min_height"], from_=1, to_=50, resolution=1, digits=2, orient=HORIZONTAL, bg=bg_color, bd=0, showvalue=0, state=DISABLED).grid(row=4, column=1)
-Label(bottomFrame, textvariable=tree_settings_dict["tree_min_height"], fg=check_fg, bg=bg_color, width=4, state=DISABLED).grid(row=4, column=2, sticky=SW, padx=2, pady=0)
-Label(bottomFrame, text="Maximum Height (feet)", fg=check_fg, bg=bg_color, state=DISABLED).grid(row=5, column=0, sticky=SW, padx=2, pady=0)
-Scale(bottomFrame, variable=tree_settings_dict["tree_max_height"], from_=10, to_=100, resolution=1, digits=3, orient=HORIZONTAL, bg=bg_color, bd=0, showvalue=0, state=DISABLED).grid(row=5, column=1)
-Label(bottomFrame, textvariable=tree_settings_dict["tree_max_height"], fg=check_fg, bg=bg_color, width=4, state=DISABLED).grid(row=5, column=2, sticky=SW, padx=2, pady=0)
+Label(bottomFrame, text="Tree Size Multiplier", fg=check_fg, bg=bg_color, state=DISABLED).grid(row=3, column=0, sticky=SW, padx=2, pady=0)
+Scale(bottomFrame, variable=tree_settings_dict["size_multiplier_all"], from_=0.5, to_=2, resolution=0.1, digits=2, orient=HORIZONTAL, bg=bg_color, bd=0, showvalue=0, state=DISABLED).grid(row=3, column=1)
+Label(bottomFrame, textvariable=tree_settings_dict["size_multiplier_all"], fg=check_fg, bg=bg_color, width=4, state=DISABLED).grid(row=3, column=2, sticky=SW, padx=2, pady=0)
 
-Label(bottomFrame, text="", fg=check_fg, bg=bg_color, state=DISABLED).grid(row=6, column=0, sticky=SW, padx=2, pady=0)
+Label(bottomFrame, text="", fg=check_fg, bg=bg_color, state=DISABLED).grid(row=4, column=0, sticky=SW, padx=2, pady=0)
 
-Label(bottomFrame, text="Tree Width Limits:", fg=check_fg, bg=bg_color, state=DISABLED).grid(row=7, column=0, sticky=SW, padx=2, pady=0)
-Label(bottomFrame, text="Minimum Width (% of Std)", fg=check_fg, bg=bg_color, state=DISABLED).grid(row=8, column=0, sticky=SW, padx=2, pady=0)
-Scale(bottomFrame, variable=tree_settings_dict["tree_min_radius"], from_=10, to_=100, resolution=1, orient=HORIZONTAL, bg=bg_color, bd=0, showvalue=0, state=DISABLED).grid(row=8, column=1)
-Label(bottomFrame, textvariable=tree_settings_dict["tree_min_radius"], fg=check_fg, bg=bg_color, width=4, state=DISABLED).grid(row=8, column=2, sticky=SW, padx=2, pady=0)
-Label(bottomFrame, text="Maximum Width (% of Std)", fg=check_fg, bg=bg_color, state=DISABLED).grid(row=9, column=0, sticky=SW, padx=2, pady=0)
-Scale(bottomFrame, variable=tree_settings_dict["tree_max_radius"], from_=100, to_=200, resolution=1, orient=HORIZONTAL, bg=bg_color, bd=0, showvalue=0, state=DISABLED).grid(row=9, column=1)
-Label(bottomFrame, textvariable=tree_settings_dict["tree_max_radius"], fg=check_fg, bg=bg_color, width=4, state=DISABLED).grid(row=9, column=2, sticky=SW, padx=2, pady=0)
+Label(bottomFrame, text="Tree Height Limits:", fg=check_fg, bg=bg_color, state=DISABLED).grid(row=5, column=0, sticky=SW, padx=2, pady=0)
+Label(bottomFrame, text="Minimum Height (feet)", fg=check_fg, bg=bg_color, state=DISABLED).grid(row=6, column=0, sticky=SW, padx=2, pady=0)
+Scale(bottomFrame, variable=tree_settings_dict["tree_min_height"], from_=1, to_=50, resolution=1, digits=2, orient=HORIZONTAL, bg=bg_color, bd=0, showvalue=0, state=DISABLED).grid(row=6, column=1)
+Label(bottomFrame, textvariable=tree_settings_dict["tree_min_height"], fg=check_fg, bg=bg_color, width=4, state=DISABLED).grid(row=6, column=2, sticky=SW, padx=2, pady=0)
+Label(bottomFrame, text="Maximum Height (feet)", fg=check_fg, bg=bg_color, state=DISABLED).grid(row=7, column=0, sticky=SW, padx=2, pady=0)
+Scale(bottomFrame, variable=tree_settings_dict["tree_max_height"], from_=10, to_=100, resolution=1, digits=3, orient=HORIZONTAL, bg=bg_color, bd=0, showvalue=0, state=DISABLED).grid(row=7, column=1)
+Label(bottomFrame, textvariable=tree_settings_dict["tree_max_height"], fg=check_fg, bg=bg_color, width=4, state=DISABLED).grid(row=7, column=2, sticky=SW, padx=2, pady=0)
 
-Label(bottomFrame, text="", fg=check_fg, bg=bg_color, state=DISABLED).grid(row=10, column=0, sticky=SW, padx=2, pady=0)
+Label(bottomFrame, text="", fg=check_fg, bg=bg_color, state=DISABLED).grid(row=8, column=0, sticky=SW, padx=2, pady=0)
 
-Label(bottomFrame, text="Normal/Skinny Tree Split (h/r ratio):   ", fg=check_fg, bg=bg_color, state=DISABLED).grid(row=11, column=0, sticky=SW, padx=2, pady=0)
-Label(bottomFrame, text="\u2190 + Skinny Trees : + Normal Trees \u2192", fg=check_fg, bg=bg_color, state=DISABLED).grid(row=12, column=0, sticky=SW, padx=2, pady=0)
-Scale(bottomFrame, variable=tree_settings_dict["skinny_ratio"], from_=1.0, to_=4.0, resolution=0.1, orient=HORIZONTAL, bg=bg_color, bd=0, showvalue=0, state=DISABLED).grid(row=12, column=1)
-Label(bottomFrame, textvariable=tree_settings_dict["skinny_ratio"], fg=check_fg, bg=bg_color, width=4, state=DISABLED).grid(row=12, column=2, sticky=SW, padx=2, pady=0)
+Label(bottomFrame, text="Tree Width Limits:", fg=check_fg, bg=bg_color, state=DISABLED).grid(row=9, column=0, sticky=SW, padx=2, pady=0)
+Label(bottomFrame, text="Minimum Width (% of Std)", fg=check_fg, bg=bg_color, state=DISABLED).grid(row=10, column=0, sticky=SW, padx=2, pady=0)
+Scale(bottomFrame, variable=tree_settings_dict["tree_min_radius"], from_=10, to_=100, resolution=1, orient=HORIZONTAL, bg=bg_color, bd=0, showvalue=0, state=DISABLED).grid(row=10, column=1)
+Label(bottomFrame, textvariable=tree_settings_dict["tree_min_radius"], fg=check_fg, bg=bg_color, width=4, state=DISABLED).grid(row=10, column=2, sticky=SW, padx=2, pady=0)
+Label(bottomFrame, text="Maximum Width (% of Std)", fg=check_fg, bg=bg_color, state=DISABLED).grid(row=11, column=0, sticky=SW, padx=2, pady=0)
+Scale(bottomFrame, variable=tree_settings_dict["tree_max_radius"], from_=100, to_=200, resolution=1, orient=HORIZONTAL, bg=bg_color, bd=0, showvalue=0, state=DISABLED).grid(row=11, column=1)
+Label(bottomFrame, textvariable=tree_settings_dict["tree_max_radius"], fg=check_fg, bg=bg_color, width=4, state=DISABLED).grid(row=11, column=2, sticky=SW, padx=2, pady=0)
 
-#Label(bottomFrame, text="", fg=check_fg, bg=bg_color, state=DISABLED).grid(row=13, column=0, sticky=SW, padx=2, pady=0)
-# Non-default tree option will normalize all trees to lidar heights - normalization option not required
-#Checkbutton(bottomFrame, text=" Normalize Tree Sizes", variable=tree_settings_dict["normalize_trees"], fg=check_fg, bg=bg_color, state=DISABLED).grid(row=14, column=0, sticky=SW, pady=8)
+Label(bottomFrame, text="", fg=check_fg, bg=bg_color, state=DISABLED).grid(row=12, column=0, sticky=SW, padx=2, pady=0)
+
+Label(bottomFrame, text="Normal/Skinny Tree Split (h/r ratio):   ", fg=check_fg, bg=bg_color, state=DISABLED).grid(row=13, column=0, sticky=SW, padx=2, pady=0)
+Label(bottomFrame, text="\u2190 + Skinny Trees : + Normal Trees \u2192", fg=check_fg, bg=bg_color, state=DISABLED).grid(row=14, column=0, sticky=SW, padx=2, pady=0)
+Scale(bottomFrame, variable=tree_settings_dict["skinny_ratio"], from_=1.0, to_=4.0, resolution=0.1, orient=HORIZONTAL, bg=bg_color, bd=0, showvalue=0, state=DISABLED).grid(row=14, column=1)
+Label(bottomFrame, textvariable=tree_settings_dict["skinny_ratio"], fg=check_fg, bg=bg_color, width=4, state=DISABLED).grid(row=14, column=2, sticky=SW, padx=2, pady=0)
 
 treeDataFrame = Frame(treeControlFrame2, bg=bg_color, highlightcolor="black", highlightthickness=1)
 tree_count = Label(treeDataFrame, textvariable = tree_settings_dict["num_trees"], fg=check_fg, bg=bg_color, pady=3).pack()

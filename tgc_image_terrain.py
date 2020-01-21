@@ -55,28 +55,44 @@ def get_trees(theme, tree_variety, trees, tree_settings_dict, tree_category):
 	#   Height: Use random heights within settings height range
 	#   Radius: Equal to height scale, including multipliers
 
+    # Tree Height/Radius Settings
+    min_tree_height = min(trees, key=lambda x: x[3])[3]
+    max_tree_height = max(trees, key=lambda x: x[3])[3]
+    min_tree_radius = min(trees, key=lambda x: x[2])[2]
+    max_tree_radius = max(trees, key=lambda x: x[2])[2]
+    tree_height_range = max_tree_height - min_tree_height
+    tree_radius_range = max_tree_radius - min_tree_radius
+    real_height_factor = tgc_definitions.tree_meters_to_tgc.get(theme, [0])   # converts height in meters to TGC scale
     default_trees = tree_settings_dict.get('default_trees').get()
     enforce_tgc_size = tree_settings_dict.get('enforce_tgc_limit').get()
 
+    # Add lidar tree height info to settings page
+    tree_settings_dict.get('tallest_tree').set(value="Tallest Tree Height:  " + '{:.1f}'.format(max_tree_height) + " m / " + '{:.1f}'.format(max_tree_height*3.28) + " ft")
+    tree_settings_dict.get('shortest_tree').set(value="Shortest Tree Height:  " + '{:.1f}'.format(min_tree_height) + " m / " + '{:.1f}'.format(min_tree_height*3.28) + " ft")
+
     # Get possible trees for this theme. User can't easily change theme after this, but it's easy to rerun the import tool
-    if default_trees is True:
+    if not tree_variety:
+        normal_tree_ids = [0]
+        skinny_tree_ids = []
+    elif default_trees is True:
         normal_tree_ids = tgc_definitions.normal_trees.get(theme, [0])
-        skinny_tree_ids = tgc_definitions.skinny_trees.get(theme, normal_tree_ids)
+        skinny_tree_ids = tgc_definitions.skinny_trees.get(theme, [])
     else:
         normal_tree_ids = []
         skinny_tree_ids = []
         for i, x in enumerate(tree_category[0]):
             x_value = x.get()
-            if x_value==1:
+            if (x_value==1) or (tree_height_range < 0.1):   # If using OSM trees make all normal
                 normal_tree_ids.append(i)
             elif x_value==2:
                 skinny_tree_ids.append(i)
-    # Default to the default tree 0 if empty or not found
-    if (not tree_variety) or len(normal_tree_ids) == 0:
-        normal_tree_ids = [0]
-    # Default to the normal trees if empty or not found
-    if (not tree_variety) or len(skinny_tree_ids) == 0:
-        skinny_tree_ids = []
+        if len(normal_tree_ids) == 0:
+            if len(skinny_tree_ids) == 0:                   # No trees selected
+                normal_tree_ids = [0]
+            else:                                           # Only skinny trees selected
+                normal_tree_ids = skinny_tree_ids.copy()
+                skinny_tree_ids = []
+
     # Make an group for each type of tree, even if they may not be used
     normal_trees = []
     skinny_trees = []
@@ -91,19 +107,6 @@ def get_trees(theme, tree_variety, trees, tree_settings_dict, tree_category):
         p['Key']['type'] = tree_id
         skinny_trees.append(p)
 
-    # Tree Height/Radius Settings
-    min_tree_height = min(trees, key=lambda x: x[3])[3]
-    max_tree_height = max(trees, key=lambda x: x[3])[3]
-    min_tree_radius = min(trees, key=lambda x: x[2])[2]
-    max_tree_radius = max(trees, key=lambda x: x[2])[2]
-    tree_height_range = max_tree_height - min_tree_height
-    tree_radius_range = max_tree_radius - min_tree_radius
-    real_height_factor = tgc_definitions.tree_meters_to_tgc.get(theme, [0])   # converts height in meters to TGC scale
-
-    # Add lidar tree height info to settings page
-    tree_settings_dict.get('tallest_tree').set(value="Tallest Tree Height:  " + '{:.1f}'.format(max_tree_height) + " m / " + '{:.1f}'.format(max_tree_height*3.28) + " ft")
-    tree_settings_dict.get('shortest_tree').set(value="Shortest Tree Height:  " + '{:.1f}'.format(min_tree_height) + " m / " + '{:.1f}'.format(min_tree_height*3.28) + " ft")
-
     # Scale trees based on relative sizes, settings
     if default_trees is True:
         min_height = 10 / 3.28  # min default height in meters (first number is feet)
@@ -112,6 +115,7 @@ def get_trees(theme, tree_variety, trees, tree_settings_dict, tree_category):
         max_radius_scale = 150 / 100 # max radius scale as a percent of tree specific height scale
         radius_scale_range = max_radius_scale - min_radius_scale
         skinny_h_r_ratio = 2.5  # Height to Radius Ratio to determine whether tree is a normal or skinny tree
+        size_multiplier_all = 1.0
         size_multiplier = [1.0] * (len(tgc_definitions.tree_names.get(theme)) + 1)
     else:
         min_height = tree_settings_dict.get('tree_min_height').get() / 3.28
@@ -120,6 +124,7 @@ def get_trees(theme, tree_variety, trees, tree_settings_dict, tree_category):
         max_radius_scale = tree_settings_dict.get('tree_max_radius').get() / 100
         radius_scale_range = max_radius_scale - min_radius_scale
         skinny_h_r_ratio = tree_settings_dict.get('skinny_ratio').get()
+        size_multiplier_all = tree_settings_dict.get('size_multiplier_all').get()
         size_multiplier = []
         for i, x in enumerate(tree_category[1]):
             size_multiplier.append(x.get())
@@ -128,17 +133,17 @@ def get_trees(theme, tree_variety, trees, tree_settings_dict, tree_category):
         easting, northing, r, h = tree
         t = get_object_item(easting, northing, random.randrange(0, 359))
 
-        if h / r < skinny_h_r_ratio or len(skinny_trees) == 0: # Normal Tree
+        if h / r < skinny_h_r_ratio or len(skinny_trees) == 0:
             group = random.choice(normal_trees)
-        else: # Skinny tree
+        else:
             group = random.choice(skinny_trees)
         tree_type = group['Key']['type']
 
         # Tree Height Scale
         if tree_height_range < 0.1:     # OSM tree
-            h = random.randrange(min_height, max_height)
+            h = random.uniform(min_height, max_height)
         else:                           # Lidar tree
-            h = h * size_multiplier[tree_type]
+            h = h * size_multiplier_all * size_multiplier[tree_type]
             if h < min_height: h = min_height
             elif h > max_height: h = max_height
         h_scale = h * real_height_factor[tree_type]
