@@ -81,6 +81,7 @@ skinny_trees = {
     15: [2, 3, 8, 9, 10, 22],
 }
 
+# List all types to be included on settings page, one for each tree type number, "" to skip
 tree_names = {
     2: ["Tree", "Tree", "Tree", "Tree", "", "", "", "", "", "Tree", "Palm", "Palm", "Palm", "Palm", "Palm", "Palm", "Palm", "Dead Tree", "Dead Tree", "Dead Tree"],
     5: ["Cedar", "Cedar", "Cedar", "Pine", "Pine", "Pine", "Ponderosa", "Ponderosa", "Ponderosa", "Pine", "Pine", "Pine", "Pine", "Pine", "Pine", "Pine", "Pine", "Maple", "Birch", "Birch"],

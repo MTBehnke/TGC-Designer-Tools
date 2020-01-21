@@ -987,7 +987,7 @@ courseConsoleOutput.pack(side=LEFT, padx=5, pady=5, fill=tk.BOTH, expand=True)
 treeControlFrame = Frame(tree_settings, bg=bg_color, relief=GROOVE)
 treeControlFrame2 = Frame(tree_settings, bg=bg_color, relief=GROOVE)
 
-# Tree Settings Options
+# Tree Settings Options - set to default values initially
 tree_settings_dict["theme_name"] = tk.StringVar()
 tree_settings_dict["num_trees"]=tk.StringVar(value="Lidar Tree Count:")
 tree_settings_dict["tallest_tree"]=tk.StringVar(value="Tallest Tree Height:")

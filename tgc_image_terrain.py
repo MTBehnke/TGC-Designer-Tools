@@ -70,7 +70,7 @@ def get_trees(theme, tree_variety, trees, tree_settings_dict, tree_category):
     tree_settings_dict.get('tallest_tree').set(value="Tallest Tree Height:  " + '{:.1f}'.format(max_tree_height) + " m / " + '{:.1f}'.format(max_tree_height*3.28) + " ft")
     tree_settings_dict.get('shortest_tree').set(value="Shortest Tree Height:  " + '{:.1f}'.format(min_tree_height) + " m / " + '{:.1f}'.format(min_tree_height*3.28) + " ft")
 
-    # Get possible trees for this theme. User can't easily change theme after this, but it's easy to rerun the import tool
+    # Get list of normal and skinny tree types based on selected options.
     if not tree_variety:
         normal_tree_ids = [0]
         skinny_tree_ids = []

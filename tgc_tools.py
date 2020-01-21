@@ -158,7 +158,7 @@ def get_metadata_json(course_directory):
         
     return metadata_json
 
-def get_spline_configuration_json(course_directory):
+def get_spline_configuration_json(course_directory):  # Gives option for user to modify spline settings
     try:
         course_dir = Path(course_directory)
         spline_json = None
