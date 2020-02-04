@@ -23,10 +23,10 @@ This app was forked from https://github.com/chadrockey/TGC-Designer-Tools and pe
 
 
 ## Import Terrain and Features Tab
- 
+ ![image](https://user-images.githubusercontent.com/22116435/73792230-7ba88000-4769-11ea-9970-b0b4e9204321.png)
 
 ## Tree Settings Tab
- 
+ ![image](https://user-images.githubusercontent.com/22116435/73792040-1eacca00-4769-11ea-8f5d-a1df4f38d646.png)
 
 ## Quick Start Guide
 
