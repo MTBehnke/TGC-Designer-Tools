@@ -1,4 +1,4 @@
-## TGC Golf Tools – Tree Settings Tutorial
+# TGC Golf Tools – Tree Settings Tutorial
 
 
 This is a how-to guide on using the Tree Settings tab in the TGC-Designer-Tools available at: https://github.com/MTBehnke/TGC-Designer-Tools/releases
@@ -6,10 +6,10 @@ This is a how-to guide on using the Tree Settings tab in the TGC-Designer-Tools 
 This app was forked from https://github.com/chadrockey/TGC-Designer-Tools and performs all the same functions as the original tool while adding the tree settings options.  For a tutorial on using the rest of the tool features, see https://chadrockey.github.io/TGC-Designer-Tools/TUTORIAL
 
 
-If you have a problem, please describe it the best you can, send screenshots, photos, and anything you can copy and paste and make a New Issue at https://github.com/MTBehnke/TGC-Designer-Tools/issues
+If you have a problem related to the tree settings, please describe it the best you can, send screenshots, photos, and anything you can copy and paste and make a New Issue at https://github.com/MTBehnke/TGC-Designer-Tools/issues
 
 
-# Starting the App
+## Starting the App
 
 Download and run the exe files from releases: https://github.com/MTBehnke/TGC-Designer-Tools/releases
 
@@ -24,7 +24,8 @@ The file doesn't need to be installed, just double click it and it should run.
  ![image](https://user-images.githubusercontent.com/22116435/73792040-1eacca00-4769-11ea-8f5d-a1df4f38d646.png)
 
 
-## Quick Start Guide
+
+# Quick Start Guide
 
 1.	Process Lidar with Select Lidar and Generate Heightmap
 
@@ -54,6 +55,9 @@ The file doesn't need to be installed, just double click it and it should run.
 
 6.	Repeat step 3 through 5 until satisfied with trees.
 
+
+
+# Tree Settings
 
 ## Tree Source Data
 
