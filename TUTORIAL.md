@@ -120,3 +120,29 @@ In addition to changing the height:width ratio, you can also change the list of 
 
 
 OSM trees don’t have any height or width data, so the tool will select a tree type from either list, excluding any marked none.
+
+
+## My Typical Settings
+
+I usually use the Rustic theme as that has a nice mix of deciduous trees and coniferous trees that better matches the trees in my area.  I might also uncheck a few of the tree types, including usually only including one or two of the conifers.  
+
+
+Typically the lidar trees detected range from around 10-70 feet in my area, which is displayed at the bottom of the settings page after the first time you run the tool.  I usually set the minimum height to around 25-30 feet as most shorter trees look somewhat out of place in the game.  I usually keep the maximum set at 70 feet.
+
+
+If a course has a lot of shorter trees, the minimum height setting can result in a bit too uniform look.  In this case, leaving Enforce TGC Minimum Size checked can help with a little variety for the shorter trees.
+
+
+I usually narrow the width range, favoring wider a bit more.  I find setting the minimum width to around 80% and the maximum width to around 120-130% usually looks pretty good.
+
+
+If a course has a lot of trees, especially thicker tree lined fairways, keeping the overall size multiplier set to 1.0 works pretty well.  For courses with smaller, fewer and more spaced out trees, increasing the sizes can help keep the trees from feeling too small.
+
+
+I've noticed that trees with narrow peaks sometimes seem to be shorter than the other types of trees.  I think this may be because lidar has a harder time finding the true peak height of skinny trees.  If this is the case, I usually bump up the size multiplier for the skinny tree types until they look right.
+
+
+Finally, I usually lower the Normal/Skinny Tree Split setting a bit, until the mix of trees better matches the real life mix of trees.  We have some courses with lots of pines and by adjusting this I can often get areas of the course with lots of pines to populate with pines.
+
+
+Getting the trees right with the settings usually takes me 3-4 iterations.  While you can usually tell if you like the trees it generated with a quick view in TGC, I'd recommend play-testing a few holes or at least viewing the trees from ground level in the game.  After all, this is the angle you'll be viewing the trees from the vast majority of the time.  I find that I've kept the trees too short versus too tall more often than not.
