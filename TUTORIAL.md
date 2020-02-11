@@ -1,128 +1,148 @@
-# Tutorial
+# TGC Golf Tools – Tree Settings Tutorial
 
-Download and run the exe files from releases: [https://github.com/chadrockey/TGC-Designer-Tools/releases](https://github.com/chadrockey/TGC-Designer-Tools/releases)
+
+This is a how-to guide on using the Tree Settings tab in the TGC-Designer-Tools available at: https://github.com/MTBehnke/TGC-Designer-Tools/releases
+
+This app was forked from https://github.com/chadrockey/TGC-Designer-Tools and performs all the same functions as the original tool while adding the tree settings options.  For a tutorial on using the rest of the tool features, see https://chadrockey.github.io/TGC-Designer-Tools/TUTORIAL
+
+
+If you have a problem related to the tree settings, please describe it the best you can, send screenshots, photos, and anything you can copy and paste and make a New Issue at https://github.com/MTBehnke/TGC-Designer-Tools/issues
+
+
+## Starting the App
+
+Download and run the exe files from releases: https://github.com/MTBehnke/TGC-Designer-Tools/releases
+
 
 The file doesn't need to be installed, just double click it and it should run.
 
-## Reporting issues
 
-If you have a problem, please describe it the best you can, send screenshots, photos, and anything you can copy and paste and make a New Issue here:
+## Import Terrain and Features Tab
+ ![image](https://user-images.githubusercontent.com/22116435/73792230-7ba88000-4769-11ea-9970-b0b4e9204321.png)
 
-[https://github.com/chadrockey/TGC-Designer-Tools/issues](https://github.com/chadrockey/TGC-Designer-Tools/issues)
+## Tree Settings Tab
+ ![image](https://user-images.githubusercontent.com/22116435/73792040-1eacca00-4769-11ea-8f5d-a1df4f38d646.png)
 
-## Getting Lidar Data
 
-United States for now, we may need a wiki for international resources.  Mostly try searching for something like: "Austrailia Lidar LAS" or "Scotland Lidar LAZ"
 
-This is the most difficult part of the process.
+# Quick Start Guide
 
-Start here: [The NOAA United States Interagency Elevation Inventory](https://coast.noaa.gov/inventory/)
+1.	Process Lidar with Select Lidar and Generate Heightmap
 
-Zoom in on the map to where you want to find Lidar.  This Interagency cooperation will tell you what lidar exists, when it was taken, and where you can get it.
+2.	Run Select and Import Heightmap and OSM into Course, with:
 
-![alt text](https://i.imgur.com/SCT0F2H.png "NOAA Lidar Inventory")
+    •	Import Mapped Woods/Trees:  unchecked
 
-I like to first zoom in useing Basemap->Street, then switch to Basemap->Imagery when I find the golf course.
+    •	Add Trees From Lidar (Experimental):  checked
 
-![alt text](https://i.imgur.com/bEyTqIM.png "Viewing Lidar Data Options")
+    •	Tree Variety (Lidar and OSM):  checked
 
-To view if there's available lidar for this location, first click Identify, then click on your golf course.
+    •	Tree Settings tab:  default settings or modify if desired
 
-Look through the list to find the most recent, available lidar data.  For Muirfield, there's 2018 data not yet published, 2012 you can buy from the State of Ohio, or 2007 data available for free at The National Map.  We'll choose the 2007 data here.
+    Note:  Tree Settings tab will be blank until you’ve imported a course, typically a blank course for the first run.
 
-![alt text](https://i.imgur.com/hUryJZT.png "Using the National Map")
+3.	Export .course file and view in TGC
 
-Once you follow the link through to the National Map, I like to view USGS Imagery Topo.  Click on the icon that looks like a stack of squares, then select USGS Imagery Topo and zoom into your golf course.
+    •	Examine trees, decide if any changes are desired.
 
-![alt text](https://i.imgur.com/agnNYYh.png "Selecting a Region")
+4.	Modify Tree Settings as desired
 
-To Make sure we get all of the needed lidar data, draw a square around the golf course by selecting Box, then drawing the box.  Leave enough room that you don't forget a teebox!  (3) Then make sure Lidar Point Cloud is selected, and press (4) Find Products
+5.	Rerun Select and Import Heightmap and OSM into Course, with:
 
-![alt text](https://i.imgur.com/3CJQTP1.png "Adding Lidar to Cart")
+    •	Import OpenStreetMap:  unchecked
 
-Now you see all of the available lidar files for the box.  In this case, we see data from 2007 and 2006.  Be sure to only select data from the year/set that you chose previously.  Mixing Lidar data does not seem to improve the quality and can have small inconsistencies.  For all of the desired lidar files, click add to cart.  Be sure to scroll down and once you're done, hit view cart.
+    Note:  Once OSM has been imported, there isn’t a need to reimport it.
 
-![alt text](https://i.imgur.com/tpMvvCU.png "Downloading Files from Cart")
+6.	Repeat step 3 through 5 until satisfied with trees.
 
-Once you're in the cart, usually select download LAS for each file.  This will download the LAS and metadata in a zipped file.
 
-![alt text](https://i.imgur.com/Yx3YjhC.png "Making a Course Directory")
 
-Now on your computer, make a folder that you want to use to store the course files.  In this case< i called it MuirfieldVillage and unzipped all of the lidar zip files into this directory.  You should have at least two files from each zip.
+# Tree Settings
 
-## Editing OpenStreetMap
+## Tree Source Data
 
-This part is optional, but I highly recommend it to make the following easier.  At least outline a few water hazards and greens on your course to help you get your bearings.
+The tool generates its list of trees to add to a course based on one of two sources selected by the user:
 
-I will eventually create a good tutorial on how to make courses on OpenStreetMap, but here is a short video where it does a bad job of mapping the course, but explains the basics:
-[https://blog.mapbox.com/mapping-a-golf-course-4f5bc88ca59b](https://blog.mapbox.com/mapping-a-golf-course-4f5bc88ca59b)
+   •	Lidar – includes position, height and radius of trees, automatically determined from Lidar data.
 
-Important tips to keep in mind:
-Map greens along the inside of THE FRINGE
-Map bunkers on the outside lip
-Map water on the outside lip.
+   •	OSM – position where manually located in OSM, height and radius assigned randomly.
 
-![alt text](https://i.imgur.com/xkYAkbV.png "A Well-Mapped Green")
+To use Lidar trees, run the tool with Import Mapped Woods/Trees unchecked.
 
-You'll be able to pull in new OpenStreetMap data whenever you want by re-generating your course, so don't worry if you can't complete the entire course or to the level of accuracy that you want.
+Note:  If you mapped wooded areas in OSM but still want Lidar trees, first run the tool with the Mapped Woods/Trees option checked, then all later runs with it unchecked.
 
-## Running the software
 
-![alt text](https://i.imgur.com/EyvFDBD.png "Adding Course to the Folder")
+## Default Tree Setting
 
-Inside TGC 2019, create a new course and set all of the basic settings you want: Course Name, Theme, etc.  This should be a completely empty course, so don't use a half completed course.  You will also have to delete the clubhouse from the middle of the map if it's there.  Save and Exit the designer.
+If Use Default Settings is checked, the tool will use the settings displayed on the Tree Settings tab upon initial launch.
 
-Copy and rename (it will have a random name like XYHGHEOKJP.course) to the course file with the lidar files.  Your course will be at: C:\Users\USERNAME\AppData\LocalLow\2K\The Golf Club 2019\Courses
 
-![alt text](https://i.imgur.com/PSgxcLr.png "Adding the Course File to the Tool")
+## Enforce TGC Minimum Tree Size
 
-Now run TGC-Designer-Tools (More Info -> Accept if Windows warns you that you downloaded it from the Internet).  Choose Select Course Directory and choose the folder where we put the lidar files and the course file.
+Trees added directly within TGC Designer are generally much larger than their real world sizes, even fully scaled down.  This tool allows much smaller trees to be added to match their real world heights.
 
-Now click Import Course and select the course file.  The image preview should change from static to black to show that the course is empty.
 
-We are ready to import the lidar, so switch to the Lidar tab (step 3)
+The primary issue this can create occurs where lidar trees are nearby trees added manually, such as in masked areas.  The size difference can be quite apparent and may be undesireable.  Additionally, if you move any Lidar trees that are smaller than the TGC minimum size, TGC will automatically resized it to the minimum.
 
-![alt text](https://i.imgur.com/VvcHnUM.png "The Lidar Tab")
 
-Now press the Select Lidar and Generate Heightmap button and select the folder where your lidar files are.  If all goes well, you'll see the text process the lidar files.  This may take a while.
+By selecting the Enforce TGC Minimum Tree Size option, no trees will be smaller than the normal minimum size.
 
-![alt text](https://i.imgur.com/FC8NMLr.png "Outlining the Course")
 
-Halfway through the process, it will open a new window and ask you to draw the box around the course.  As before leave enough room so you don't clip off teeboxes.  Press Accept when you're happy with your selection.  When it finishes, it will ask you to edit the Mask.
+## Tree Size Multiplier and Size Multipliers
+These sliders allow you to scale the overall size of trees, the first one for all trees and the latter for specific types of trees.
 
-![alt text](https://i.imgur.com/hJcrGeN.png "Mask in MS Paint Software")
 
-A Mask is an image that's used to select or hide other data.  In this case, we're going to paint every area that isn't important in BRIGHT RED (see circle).  You can use MS Paint, Paint3D, Photoshop, GIMP, or any program to do this, but be sure to not crop the image and to leave it as mask.png.
+## Tree Height Limits
+This allows you to specify the minimum and maximum heights allowed for trees that are added.  These limits can be useful to increase the heights of shorter trees or decrease the heights of taller trees without impacting the reset of the trees.
 
-Tip: In MS Paint, press Ctrl and the Numpad + symbol to make the brush larger.
 
-In this case you can see that I painted around the border of the image, and then started filling in.  I don't want to miss any areas.  Removing as much as I can helps reduce the resources used by the lidar terrain and allows you to create better looking courses with more decoration.
+After running the tool once, the heights of the shortest and tallest Lidar trees will display in the bottom right, which can help you decide appropriate ranges.  Note, it’s not uncommon for the tool to interpret buildings and other objects as trees, at times with heights outside the range of normal tree heights.
 
-In this case, I even "hollowed" out the area of the course that shouldn't come into play.  Here's the completed mask:
 
-![alt text](https://i.imgur.com/YXCKh3p.png "Completed Mask")
+If using OSM trees, the heights for trees will be assigned randomly based on these limits.
 
-Don't paint too closely to edges or any golf features, but leave as much as you want.  You can always come back to this step, edit the mask further, and regenerate the course output.
 
-![alt text](https://i.imgur.com/U7gCDOQ.png "Import Terrain Tab")
+## Tree Width Limits
+Similar to the Tree Height Limits, the width limits allow you to set a minimum and maximum width range, but based on the variation from the default width of the tree.  You can modify this to keep tree widths more proportional to their heights if desired.
 
-Now that our mask is complete, go to the third tab, Import Terrain, and select the heightmap and import into course.  This starts loading the heightmap and producing the course.
 
-![alt text](https://i.imgur.com/UIGNPaS.png "Viewing Course Preview")
+OSM trees default to their standard width based on their height, so this setting has no effect.
 
-Once this finishes, go back to the Tools tab and you can view a 2D preview of the course you just created from the lidar files and OpenStreetMap!
 
-Go ahead and click Export.course if everything looks right.
+## Normal and Skinny Trees
+For Lidar trees, the tool calculates the height to width ratio for each tree.  If the ratio is less than the split ratio, the tool selects a tree type from the designated normal trees.  If the ratio is greater than this number, the tool selects a tree type from the designated skinny trees.
 
-![alt text](https://i.imgur.com/2x98Pzt.png "Choosing an export filename")
 
-You can export your course wherever you'd like, but I suggest to not overwrite your empty starting course.  Maybe call this course MyCourseLidar.course or MyCourseRev1.course.
+As conifers are generally skinnier than deciduous trees, you can adjust the proportion of normal and skinny trees to better reflect the mix of real trees.
 
-Now copy your exported course back to: C:\Users\USERNAME\AppData\LocalLow\2K\The Golf Club 2019\Courses
 
-Load up the game, view your course and you should see everything come together!  Amazing!
-![alt text](https://i.imgur.com/5oLWmLg.png "A Beautiful Course Ready for Decorating")
+In addition to changing the height:width ratio, you can also change the list of normal and skinny trees as you’d like.  Additionally, you can set trees to None to prevent that type of tree from being used at all.
 
-Unfortunately, that's as far as I can complete the course for you at this point.  Now you'll have to do the fine tuning and decorating the same as any other course.  With the right support from the community and luck, automatically adding trees, automatically filling in the red painted areas with terrain, using more detail from the lidar, and more features could be implemented.
 
-I hope this worked well for you and you can share courses that are meaningful to you to the community.
+OSM trees don’t have any height or width data, so the tool will select a tree type from either list, excluding any marked none.
+
+
+## My Typical Settings
+
+I usually use the Rustic theme as that has a nice mix of deciduous trees and coniferous trees that better matches the trees in my area.  I might also uncheck a few of the tree types, including usually only including one or two of the conifers.  
+
+
+Typically the lidar trees detected range from around 10-70 feet in my area, which is displayed at the bottom of the settings page after the first time you run the tool.  I usually set the minimum height to around 25-30 feet as most shorter trees look somewhat out of place in the game.  I usually keep the maximum set at 70 feet.
+
+
+If a course has a lot of shorter trees, the minimum height setting can result in a bit too uniform look.  In this case, leaving Enforce TGC Minimum Size checked can help with a little variety for the shorter trees.
+
+
+I usually narrow the width range, favoring wider a bit more.  I find setting the minimum width to around 80% and the maximum width to around 120-130% usually looks pretty good.
+
+
+If a course has a lot of trees, especially thicker tree lined fairways, keeping the overall size multiplier set to 1.0 works pretty well.  For courses with smaller, fewer and more spaced out trees, increasing the sizes can help keep the trees from feeling too small.
+
+
+I've noticed that trees with narrow peaks sometimes seem to be shorter than the other types of trees.  I think this may be because lidar has a harder time finding the true peak height of skinny trees.  If this is the case, I usually bump up the size multiplier for the skinny tree types until they look right.
+
+
+Finally, I usually lower the Normal/Skinny Tree Split setting a bit, until the mix of trees better matches the real life mix of trees.  We have some courses with lots of pines and by adjusting this I can often get areas of the course with lots of pines to populate with pines.
+
+
+Getting the trees right with the settings usually takes me 3-4 iterations.  While you can usually tell if you like the trees it generated with a quick view in TGC, I'd recommend play-testing a few holes or at least viewing the trees from ground level in the game.  After all, this is the angle you'll be viewing the trees from the vast majority of the time.  I find that I've kept the trees too short versus too tall more often than not.
