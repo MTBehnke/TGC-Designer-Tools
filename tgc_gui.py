@@ -23,7 +23,7 @@ import tgc_image_terrain
 from tgc_visualizer import drawCourseAsImage
 import OSMTGC
 
-TGC_GUI_VERSION = "0.3.4 Beta"
+TGC_GUI_VERSION = "0.3.5"
 
 image_width = 500
 image_height = 500
@@ -1026,7 +1026,7 @@ Label(bottomFrame, text="Minimum Height (feet)", fg=check_fg, bg=bg_color, state
 Scale(bottomFrame, variable=tree_settings_dict["tree_min_height"], from_=1, to_=50, resolution=1, digits=2, orient=HORIZONTAL, bg=bg_color, bd=0, showvalue=0, state=DISABLED).grid(row=6, column=1)
 Label(bottomFrame, textvariable=tree_settings_dict["tree_min_height"], fg=check_fg, bg=bg_color, width=4, state=DISABLED).grid(row=6, column=2, sticky=SW, padx=2, pady=0)
 Label(bottomFrame, text="Maximum Height (feet)", fg=check_fg, bg=bg_color, state=DISABLED).grid(row=7, column=0, sticky=SW, padx=2, pady=0)
-Scale(bottomFrame, variable=tree_settings_dict["tree_max_height"], from_=10, to_=100, resolution=1, digits=3, orient=HORIZONTAL, bg=bg_color, bd=0, showvalue=0, state=DISABLED).grid(row=7, column=1)
+Scale(bottomFrame, variable=tree_settings_dict["tree_max_height"], from_=20, to_=150, resolution=1, digits=3, orient=HORIZONTAL, bg=bg_color, bd=0, showvalue=0, state=DISABLED).grid(row=7, column=1)
 Label(bottomFrame, textvariable=tree_settings_dict["tree_max_height"], fg=check_fg, bg=bg_color, width=4, state=DISABLED).grid(row=7, column=2, sticky=SW, padx=2, pady=0)
 
 Label(bottomFrame, text="", fg=check_fg, bg=bg_color, state=DISABLED).grid(row=8, column=0, sticky=SW, padx=2, pady=0)
